@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-class UserDetailsTest {
+class CustomUserDetailsTest {
 
-    @DisplayName("유효한 User -> 변환 성공")
+    @DisplayName("유효한 CustomUserDetails -> 변환 성공")
     @Test
     void createUserDetails() {
         // given
@@ -18,7 +18,7 @@ class UserDetailsTest {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
         // expect
-        Assertions.assertThatCode(() -> new User(username, password, authorities))
+        Assertions.assertThatCode(() -> new CustomUserDetails(username, password, authorities))
                 .doesNotThrowAnyException();
     }
 
@@ -32,7 +32,7 @@ class UserDetailsTest {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
         // expect
-        Assertions.assertThatThrownBy(() -> new User(given, password, authorities))
+        Assertions.assertThatThrownBy(() -> new CustomUserDetails(given, password, authorities))
                 .isInstanceOf(Exception.class);
     }
 
@@ -45,7 +45,7 @@ class UserDetailsTest {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
         // expect
-        Assertions.assertThatThrownBy(() -> new User(username, password, authorities))
+        Assertions.assertThatThrownBy(() -> new CustomUserDetails(username, password, authorities))
                 .isInstanceOf(Exception.class);
     }
 
@@ -56,7 +56,7 @@ class UserDetailsTest {
         String username = "user";
         String password = "pass";
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        UserDetails userDetails = new User(username, password, authorities);
+        UserDetails userDetails = new CustomUserDetails(username, password, authorities);
 
         // expect
         Assertions.assertThat(userDetails.getUsername()).isEqualTo("user");
@@ -69,7 +69,7 @@ class UserDetailsTest {
         String username = "user";
         String password = "pass";
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        UserDetails userDetails = new User(username, password, authorities);
+        UserDetails userDetails = new CustomUserDetails(username, password, authorities);
 
         // expect
         Assertions.assertThat(userDetails.getPassword()).isEqualTo("pass");
@@ -82,7 +82,7 @@ class UserDetailsTest {
         String username = "user";
         String password = "pass";
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        UserDetails userDetails = new User(username, password, authorities);
+        UserDetails userDetails = new CustomUserDetails(username, password, authorities);
 
         // expect
         Assertions.assertThat(userDetails.getAuthorities()).hasSize(1);
@@ -101,7 +101,7 @@ class UserDetailsTest {
                 new SimpleGrantedAuthority("ROLE_USER"),
                 new SimpleGrantedAuthority("ROLE_ADMIN")
         );
-        UserDetails userDetails = new User(username, password, authorities);
+        UserDetails userDetails = new CustomUserDetails(username, password, authorities);
 
         // expect
         Assertions.assertThat(userDetails.getAuthorities()).hasSize(2);

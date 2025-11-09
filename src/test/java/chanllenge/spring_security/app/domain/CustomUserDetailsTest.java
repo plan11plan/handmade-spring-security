@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-class UserTest {
+class CustomUserDetailsTest {
     @DisplayName("정상적으로 유저를 생성한다.")
     @Test
     void createUser() {
