@@ -14,13 +14,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User entityUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(ERROR_USER_NOTFOUND + username));
+    public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
+        User entityUser = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(ERROR_USER_NOTFOUND + id));
 
         return new CustomUserDetails(
                 entityUser.getUsername(),
-                entityUser.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(entityUser.getRole().toString()))
         );
     }

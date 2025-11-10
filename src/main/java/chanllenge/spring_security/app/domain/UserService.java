@@ -16,28 +16,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * 사용자를 생성하고 비밀번호를 암호화하여 저장하는 기능
+     * 사용자를 생성하고 저장하는 기능
      */
     @Transactional
-    public void registerUser(String username, String rawPassword, String role) {
+    public void registerUser(String username, String role) {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException(ERROR_USER_ALREADY_EXISTS);
         }
 
         UserRole userRole = UserRole.from(role);
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-
-        User user = new User(username, encodedPassword, userRole);
+        User user = new User(username, userRole);
         userRepository.save(user);
-    }
-
-    /**
-     * 저장된 사용자의 비밀번호를 검증하는 기능
-     */
-    public boolean verifyPassword(String username, String rawPassword) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_USER_NOT_FOUND));
-
-        return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 }

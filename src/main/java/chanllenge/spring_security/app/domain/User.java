@@ -1,13 +1,16 @@
 package chanllenge.spring_security.app.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -25,31 +28,21 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
-    private String password;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public User(String username, String password, UserRole role) {
+    public User(String username, UserRole role) {
         validateUsername(username);
-        validatePassword(password);
         validateRole(role);
 
         this.username = username;
-        this.password = password;
         this.role = role;
     }
 
     private void validateUsername(String username) {
         if (username == null || username.isBlank()) {
             throw new IllegalArgumentException(ERROR_USER_NAME_BLANK);
-        }
-    }
-
-    private void validatePassword(String password) {
-        if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException(ERROR_USER_PASSWORD_BLANK);
         }
     }
 

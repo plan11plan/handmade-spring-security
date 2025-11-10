@@ -14,49 +14,35 @@ class CustomUserDetailsTest {
     void createUser() {
         // given
         String username = "username";
-        String password = "password";
         UserRole role = UserRole.USER;
 
         // expect
-        Assertions.assertThatCode(() -> new User(username,password,role))
+        Assertions.assertThatCode(() -> new User(username, role))
                 .doesNotThrowAnyException();
     }
+
     @DisplayName("빈 유저이름 -> 예외")
     @NullAndEmptySource
     @ParameterizedTest
     void createUser_name_blank_exception(String username) {
         // given
         String given = username;
-        String password = "password";
         UserRole role = UserRole.USER;
 
         // expect
-        Assertions.assertThatThrownBy(() -> new User(given,password,role))
+        Assertions.assertThatThrownBy(() -> new User(given, role))
                 .isInstanceOf(Exception.class);
     }
-    @DisplayName("빈 패스워드 -> 예외")
-    @NullAndEmptySource
-    @ParameterizedTest
-    void createUser_password_blank_exception(String password) {
+
+    @DisplayName("빈 역할 -> 예외")
+    @Test
+    void createUser_role_null_exception() {
         // given
         String username = "username";
-        String given = password;
-        UserRole role = UserRole.USER;
+        UserRole role = null;
 
         // expect
-        Assertions.assertThatThrownBy(() -> new User(username,given,role))
-                .isInstanceOf(Exception.class);
-    }
-    @DisplayName("빈 역힐 -> 예외")
-    @NullAndEmptySource
-    @ParameterizedTest
-    void createUser_role_blank_exception(String role) {
-        // given
-        String username = "username";
-        String password = "password";
-
-        // expect
-        Assertions.assertThatThrownBy(() -> new User(username,password,UserRole.from(role)))
+        Assertions.assertThatThrownBy(() -> new User(username, role))
                 .isInstanceOf(Exception.class);
     }
 }

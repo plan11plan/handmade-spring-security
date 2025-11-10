@@ -26,41 +26,43 @@ class CustomUserDetailsPasswordFlowTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Test
-    @DisplayName("유저를 생성하고 비밀번호를 암호화하여 저장한다")
-    void registerUser_encryptsPasswordAndSave() {
-        // given
-        String username = "username";
-        String rawPassword = "12345";
-        String role = "USER";
-
-        // when
-        userService.registerUser(username, rawPassword, role);
-
-        // then
-        Optional<User> saved = userRepository.findByUsername(username);
-        assertThat(saved).isPresent();
-        User user = saved.get();
-        assertThat(user.getUsername()).isEqualTo(username);
-        assertThat(user.getPassword()).isNotEqualTo(rawPassword);
-        assertThat(passwordEncoder.matches(rawPassword, user.getPassword())).isTrue();
-    }
-    @Test
-    @DisplayName("저장된 유저의 비밀번호를 검증한다")
-    void verifyPassword_check_StoredUserPassword() {
-        // given
-        String username = "username";
-        String rawPassword = "12345";
-        String wrongPassword = "wrong-password";
-        String role = "USER";
-        userService.registerUser(username, rawPassword, role);
-
-        // when
-        boolean correct = userService.verifyPassword(username, rawPassword);
-        boolean wrong = userService.verifyPassword(username, wrongPassword);
-
-        // then
-        assertThat(correct).isTrue();
-        assertThat(wrong).isFalse();
-    }
+    // TODO: password 기능이 User 엔티티에서 제거되어 주석 처리
+    // Phase-0의 password 암호화/검증 기능은 완료됨
+//    @Test
+//    @DisplayName("유저를 생성하고 비밀번호를 암호화하여 저장한다")
+//    void registerUser_encryptsPasswordAndSave() {
+//        // given
+//        String username = "username";
+//        String rawPassword = "12345";
+//        String role = "USER";
+//
+//        // when
+//        userService.registerUser(username, rawPassword, role);
+//
+//        // then
+//        Optional<User> saved = userRepository.findByUsername(username);
+//        assertThat(saved).isPresent();
+//        User user = saved.get();
+//        assertThat(user.getUsername()).isEqualTo(username);
+//        assertThat(user.getPassword()).isNotEqualTo(rawPassword);
+//        assertThat(passwordEncoder.matches(rawPassword, user.getPassword())).isTrue();
+//    }
+//    @Test
+//    @DisplayName("저장된 유저의 비밀번호를 검증한다")
+//    void verifyPassword_check_StoredUserPassword() {
+//        // given
+//        String username = "username";
+//        String rawPassword = "12345";
+//        String wrongPassword = "wrong-password";
+//        String role = "USER";
+//        userService.registerUser(username, rawPassword, role);
+//
+//        // when
+//        boolean correct = userService.verifyPassword(username, rawPassword);
+//        boolean wrong = userService.verifyPassword(username, wrongPassword);
+//
+//        // then
+//        assertThat(correct).isTrue();
+//        assertThat(wrong).isFalse();
+//    }
 }

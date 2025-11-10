@@ -21,54 +21,42 @@ class CustomUserDetailsServiceTest {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @DisplayName("존재하는 사용자 이름 -> 사용자 상세 정보 반환")
+    @DisplayName("존재하는 사용자 ID -> 사용자 상세 정보 반환")
     @Test
-    void loadUserByUsername_existing_user() {
+    void loadUserById_existing_user() {
         // given
-        String username = "user";
-        String password = "pass";
+        String username = "testuser";
         UserRole role = UserRole.USER;
-        User user = new User(username, password, role);
-        userRepository.save(user);
+        User user = new User(username, role);
+        User savedUser = userRepository.save(user);
 
         // when
-        UserDetails foundUser = userDetailsService.loadUserByUsername(username);
+        UserDetails foundUser = userDetailsService.loadUserById(savedUser.getId());
 
         // expect
         Assertions.assertThat(foundUser).isNotNull();
         Assertions.assertThat(foundUser.getUsername()).isEqualTo(username);
     }
 
-    @DisplayName("존재하지 않는 사용자 이름 -> 예외")
+    @DisplayName("존재하지 않는 사용자 ID -> 예외")
     @Test
-    void loadUserByUsername_nonexistent_user_exception() {
+    void loadUserById_nonexistent_user_exception() {
         // given
-        String username = "nonexistent";
+        Long nonexistentId = 999L;
 
         // expect
-        Assertions.assertThatThrownBy(() -> userDetailsService.loadUserByUsername(username))
+        Assertions.assertThatThrownBy(() -> userDetailsService.loadUserById(nonexistentId))
                 .isInstanceOf(UsernameNotFoundException.class);
     }
 
-    @DisplayName("null 사용자 이름 -> 예외")
+    @DisplayName("null 사용자 ID -> 예외")
     @Test
-    void loadUserByUsername_null_username_exception() {
+    void loadUserById_null_id_exception() {
         // given
-        String username = null;
+        Long userId = null;
 
         // expect
-        Assertions.assertThatThrownBy(() -> userDetailsService.loadUserByUsername(username))
-                .isInstanceOf(Exception.class);
-    }
-
-    @DisplayName("빈 사용자 이름 -> 예외")
-    @Test
-    void loadUserByUsername_empty_username_exception() {
-        // given
-        String username = "";
-
-        // expect
-        Assertions.assertThatThrownBy(() -> userDetailsService.loadUserByUsername(username))
+        Assertions.assertThatThrownBy(() -> userDetailsService.loadUserById(userId))
                 .isInstanceOf(Exception.class);
     }
 
@@ -77,13 +65,12 @@ class CustomUserDetailsServiceTest {
     void loadUser_and_check() {
         // given
         String username = "testuser";
-        String password = "testpass";
         UserRole role = UserRole.USER;
-        User user = new User(username, password, role);
-        userRepository.save(user);
+        User user = new User(username, role);
+        User savedUser = userRepository.save(user);
 
         // when
-        UserDetails foundUser = userDetailsService.loadUserByUsername(username);
+        UserDetails foundUser = userDetailsService.loadUserById(savedUser.getId());
 
         // expect
         Assertions.assertThat(foundUser).isNotNull();
@@ -95,33 +82,32 @@ class CustomUserDetailsServiceTest {
     @Test
     void loadMultipleUsers() {
         // given
-        User user1 = new User("user1", "pass1", UserRole.USER);
-        User user2 = new User("user2", "pass2", UserRole.ADMIN);
-        userRepository.save(user1);
-        userRepository.save(user2);
+        User user1 = new User("user1", UserRole.USER);
+        User user2 = new User("user2", UserRole.ADMIN);
+        User savedUser1 = userRepository.save(user1);
+        User savedUser2 = userRepository.save(user2);
 
         // expect
-        Assertions.assertThat(userDetailsService.loadUserByUsername("user1").getUsername()).isEqualTo("user1");
-        Assertions.assertThat(userDetailsService.loadUserByUsername("user2").getUsername()).isEqualTo("user2");
+        Assertions.assertThat(userDetailsService.loadUserById(savedUser1.getId()).getUsername()).isEqualTo("user1");
+        Assertions.assertThat(userDetailsService.loadUserById(savedUser2.getId()).getUsername()).isEqualTo("user2");
     }
 
     @DisplayName("권한 목록 조회 가능")
     @Test
-    void loadUserByUsername_check_authorities() {
+    void loadUserById_check_authorities() {
         // given
         String username = "adminuser";
-        String password = "adminpass";
         UserRole role = UserRole.ADMIN;
-        User user = new User(username, password, role);
-        userRepository.save(user);
+        User user = new User(username, role);
+        User savedUser = userRepository.save(user);
 
         // when
-        UserDetails foundUser = userDetailsService.loadUserByUsername(username);
+        UserDetails foundUser = userDetailsService.loadUserById(savedUser.getId());
 
         // expect
         Assertions.assertThat(foundUser.getAuthorities()).hasSize(1);
         Assertions.assertThat(foundUser.getAuthorities())
-                .extracting(GrantedAuthority::getAuthority)
+                .extracting(authority -> authority.getAuthority())
                 .contains("ADMIN");
     }
 }

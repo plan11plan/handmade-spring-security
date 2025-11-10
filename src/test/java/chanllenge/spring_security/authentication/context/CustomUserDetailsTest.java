@@ -14,11 +14,10 @@ class CustomUserDetailsTest {
     void createUserDetails() {
         // given
         String username = "user";
-        String password = "pass";
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
         // expect
-        Assertions.assertThatCode(() -> new CustomUserDetails(username, password, authorities))
+        Assertions.assertThatCode(() -> new CustomUserDetails(username, authorities))
                 .doesNotThrowAnyException();
     }
 
@@ -28,24 +27,10 @@ class CustomUserDetailsTest {
     void createUserDetails_username_blank_exception(String username) {
         // given
         String given = username;
-        String password = "password";
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
         // expect
-        Assertions.assertThatThrownBy(() -> new CustomUserDetails(given, password, authorities))
-                .isInstanceOf(Exception.class);
-    }
-
-    @DisplayName("null password -> 예외")
-    @Test
-    void createUserDetails_password_null_exception() {
-        // given
-        String username = "username";
-        String password = null;
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-
-        // expect
-        Assertions.assertThatThrownBy(() -> new CustomUserDetails(username, password, authorities))
+        Assertions.assertThatThrownBy(() -> new CustomUserDetails(given, authorities))
                 .isInstanceOf(Exception.class);
     }
 
@@ -54,25 +39,11 @@ class CustomUserDetailsTest {
     void getUsername() {
         // given
         String username = "user";
-        String password = "pass";
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        UserDetails userDetails = new CustomUserDetails(username, password, authorities);
+        UserDetails userDetails = new CustomUserDetails(username, authorities);
 
         // expect
         Assertions.assertThat(userDetails.getUsername()).isEqualTo("user");
-    }
-
-    @DisplayName("비밀번호 조회 가능")
-    @Test
-    void getPassword() {
-        // given
-        String username = "user";
-        String password = "pass";
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        UserDetails userDetails = new CustomUserDetails(username, password, authorities);
-
-        // expect
-        Assertions.assertThat(userDetails.getPassword()).isEqualTo("pass");
     }
 
     @DisplayName("권한 목록 조회 가능")
@@ -80,9 +51,8 @@ class CustomUserDetailsTest {
     void getAuthorities() {
         // given
         String username = "user";
-        String password = "pass";
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        UserDetails userDetails = new CustomUserDetails(username, password, authorities);
+        UserDetails userDetails = new CustomUserDetails(username, authorities);
 
         // expect
         Assertions.assertThat(userDetails.getAuthorities()).hasSize(1);
@@ -96,12 +66,11 @@ class CustomUserDetailsTest {
     void getAuthorities_multiple() {
         // given
         String username = "user";
-        String password = "pass";
         List<GrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority("ROLE_USER"),
                 new SimpleGrantedAuthority("ROLE_ADMIN")
         );
-        UserDetails userDetails = new CustomUserDetails(username, password, authorities);
+        UserDetails userDetails = new CustomUserDetails(username, authorities);
 
         // expect
         Assertions.assertThat(userDetails.getAuthorities()).hasSize(2);

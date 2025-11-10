@@ -5,18 +5,16 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 public class CustomUserDetails implements UserDetails {
-    private String password;
 
     private final String username;
 
     private final List<GrantedAuthority> authorities;
 
-    public CustomUserDetails(String username, String password, List<GrantedAuthority> authorities) {
+    public CustomUserDetails(String username, List<GrantedAuthority> authorities) {
         Assert.isTrue(
-                username != null && !"".equals(username) && password != null,
+                username != null && !"".equals(username),
                 "생성자에 null이나 빈값을 넣을 수 없습니다.");
         this.username = username;
-        this.password = password;
         this.authorities = Collections.unmodifiableList(authorities);
     }
 
@@ -27,7 +25,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.password;
+        return null;
     }
 
     @Override
