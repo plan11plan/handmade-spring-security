@@ -6,9 +6,10 @@ import chanllenge.spring_security.authentication.context.SimpleGrantedAuthority;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 
-public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
+public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     public JwtAuthenticationFilter(
             AuthenticationManager authenticationManager,
@@ -26,12 +27,16 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         }
 
         String token = header.substring(7);
-        Long userId = parseUserId(token);
+        try {
+            Long userId = parseUserId(token);
 
-        return new CustomJwtAuthentication(
-                userId,
-                List.of(new SimpleGrantedAuthority("ROLE_USER"))
-        );
+            return new CustomJwtAuthentication(
+                    userId,
+                    List.of(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+        } catch (IllegalArgumentException e) {
+            throw new BadCredentialsException("유효하지 않은 인증 토큰 포맷입니다.", e);
+        }
     }
 
     private Long parseUserId(String token) {
@@ -39,6 +44,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         if (token.startsWith("user-")) {
             return Long.parseLong(token.substring(5));
         }
-        throw new IllegalArgumentException("Invalid token format");
+        throw new IllegalArgumentException();
     }
 }
