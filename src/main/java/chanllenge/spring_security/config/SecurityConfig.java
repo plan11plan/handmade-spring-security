@@ -5,9 +5,11 @@ import chanllenge.spring_security.authentication.architecture.AuthenticationMana
 import chanllenge.spring_security.authentication.architecture.CustomAuthenticationEntryPoint;
 import chanllenge.spring_security.authentication.architecture.CustomJwtAuthenticationProvider;
 import chanllenge.spring_security.authentication.architecture.CustomProviderManager;
+import chanllenge.spring_security.authentication.architecture.JwtAuthenticationFilter;
 import chanllenge.spring_security.authentication.context.UserDetailsService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,4 +35,18 @@ public class SecurityConfig {
         return new CustomAuthenticationEntryPoint();
     }
 
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter() {
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
+                authenticationManager(),
+                authenticationEntryPoint()
+        );
+
+        FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(filter);
+        registrationBean.addUrlPatterns("/api/*");
+        registrationBean.setOrder(1);
+
+        return registrationBean;
+    }
 }
