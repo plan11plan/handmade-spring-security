@@ -160,3 +160,18 @@
 
 ## 4️⃣ 권한 아키텍처 구현하기
 ###  ✅ 구현 완료 조건
+
+- request 요청 플로우
+  - [x] 인증 여부를 체크한다 (AuthenticatedAuthorizationManager)
+  - [ ] 역할 기반 권한을 체크한다 (AuthorityAuthorizationManager)
+  - [ ] SpEL 표현식 기반 권한을 구현한다 (WebExpressionAuthorizationManager)
+  - [ ] URL 패턴 기반 위임을 구현한다 (RequestMatcherDelegatingAuthorizationManager)
+
+- method 권한 플로우
+
+### 📌 인증 여부 체크 (AuthenticatedAuthorizationManager)
+- [x] 인증 여부를 검사한다
+    - 권한과 무관하게 인증만 확인
+- [x] 정적 팩토리 메서드를 제공한다
+    - authenticated() -> 인증된 사용자만
+    - fullyAuthenticated() -> 완전 인증된 사용자만
