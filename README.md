@@ -163,11 +163,9 @@
 
 - request 요청 플로우
   - [x] 인증 여부를 체크한다 (AuthenticatedAuthorizationManager)
-  - [ ] 역할 기반 권한을 체크한다 (AuthorityAuthorizationManager)
-  - [ ] SpEL 표현식 기반 권한을 구현한다 (WebExpressionAuthorizationManager)
-  - [ ] URL 패턴 기반 위임을 구현한다 (RequestMatcherDelegatingAuthorizationManager)
+  - [x] 역할 기반 권한을 체크한다 (AuthorityAuthorizationManager)
 
-- method 권한 플로우
+
 
 ### 📌 인증 여부 체크 (AuthenticatedAuthorizationManager)
 - [x] 인증 여부를 검사한다
@@ -176,19 +174,26 @@
     - authenticated() -> 인증된 사용자만
     - fullyAuthenticated() -> 완전 인증된 사용자만
 
-### 📌 권한 기반 체크 (AuthorityAuthorizationManager)
-현재 사용자에게 권한이 부여되었는지 확인하는
-- [] 필요한 권한을 설정한다
-    - 생성자로 권한 목록 받기
-    - 빈 목록도 허용
-- [ ] RoleHierarchy를 설정한다.
-  - 기본은 NullRoleHierarchy다
-  - null 이면 -> 예외
-- [ ] hasRole() 메서드를 제공한다
-    - "ROLE_" 접두사가 없으면 -> 예외
-    - AuthorityAuthorizationManager의 인스턴스를 만든다.
-- [ ] hasAnyRole() 메서드를 제공한다 (OR 조건)
-    - 여러 역할 중 하나라도 있으면 허용한다.
-    - 요소에 "ROLE_" 접두사가 없으면 -> 예외
-- [ ] 사용자 권한을 검사한다.
+### 📌 역할 기반 권한 체크 (AuthorityAuthorizationManager)
+
+- [x] hasRole() - 단일 역할 검사
+  - ROLE_ 접두사 자동 추가
+  - 권한이 없으면 거부
+  - ROLE_로 시작하는 경우 예외 발생
+- [x] hasAuthority() - 단일 권한 검사
+  - ROLE_ 접두사 없이 그대로 검사
+- [x] hasAnyRole() - 여러 역할 중 하나 (OR 조건)
+  - 여러 역할 중 하나라도 있으면 허용
+  - 첫 번째 역할만 있어도 허용
+  - 역할이 하나도 없으면 거부
+- [x] hasAnyAuthority() - 여러 권한 중 하나 (OR 조건)
+  - 여러 권한 중 하나라도 있으면 허용
+  - 권한이 하나도 없으면 거부
+- [x] null 체크
+  - Authentication null -> 거부
+  - 권한 목록 비어있음 -> 거부
+  - 권한 목록 null -> 거부
+- [x] OR 조건 동작 검증
+  - 여러 권한 중 하나만 있어도 허용
+  - 여러 권한을 모두 가지고 있어도 허용
 
