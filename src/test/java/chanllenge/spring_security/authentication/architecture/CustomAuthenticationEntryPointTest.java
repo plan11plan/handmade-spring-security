@@ -1,5 +1,7 @@
 package chanllenge.spring_security.authentication.architecture;
 
+import chanllenge.spring_security.authentication.exception.AuthenticationException;
+import chanllenge.spring_security.authentication.exception.UserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -9,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 class CustomAuthenticationEntryPointTest {
 
@@ -31,7 +31,7 @@ class CustomAuthenticationEntryPointTest {
     @Test
     void commence_authenticationFailure_createsHttpResponse() throws Exception {
         // given
-        AuthenticationException exception = new UsernameNotFoundException("User not found");
+        AuthenticationException exception = new UserNotFoundException("User not found");
 
         // when
         entryPoint.commence(request, response, exception);
@@ -46,7 +46,7 @@ class CustomAuthenticationEntryPointTest {
     void commence_exception_returnsStatusCodeAndMessage() throws Exception {
         // given
         String exceptionMessage = "DB에 유저를 찾을 수 없습니다: 999";
-        AuthenticationException exception = new UsernameNotFoundException(exceptionMessage);
+        AuthenticationException exception = new UserNotFoundException(exceptionMessage);
 
         // when
         entryPoint.commence(request, response, exception);

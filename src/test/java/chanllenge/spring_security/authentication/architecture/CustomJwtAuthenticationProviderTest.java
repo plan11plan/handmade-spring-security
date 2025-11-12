@@ -12,9 +12,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import chanllenge.spring_security.authentication.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -81,7 +81,7 @@ class CustomJwtAuthenticationProviderTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> provider.authenticate(authentication))
-                .isInstanceOf(UsernameNotFoundException.class)
+                .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("DB에 유저를 찾을 수 없습니다");
     }
 

@@ -1,5 +1,6 @@
 package chanllenge.spring_security.authentication.architecture;
 
+import chanllenge.spring_security.authentication.exception.AuthenticationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.security.core.AuthenticationException;
 
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

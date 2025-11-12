@@ -3,11 +3,11 @@ package chanllenge.spring_security.authentication.architecture;
 import chanllenge.spring_security.authentication.context.Authentication;
 import chanllenge.spring_security.authentication.context.CustomJwtAuthentication;
 import chanllenge.spring_security.authentication.context.SimpleGrantedAuthority;
+import chanllenge.spring_security.authentication.exception.AuthenticationException;
+import chanllenge.spring_security.authentication.exception.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
 
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
                     List.of(new SimpleGrantedAuthority("ROLE_USER"))
             );
         } catch (IllegalArgumentException e) {
-            throw new BadCredentialsException("유효하지 않은 인증 토큰 포맷입니다.", e);
+            throw new InvalidTokenException("유효하지 않은 인증 토큰 포맷입니다.", e);
         }
     }
 

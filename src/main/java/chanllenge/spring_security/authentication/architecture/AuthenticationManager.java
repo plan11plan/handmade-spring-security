@@ -1,7 +1,7 @@
 package chanllenge.spring_security.authentication.architecture;
 
 import chanllenge.spring_security.authentication.context.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import chanllenge.spring_security.authentication.exception.AuthenticationException;
 
 @FunctionalInterface
 public interface AuthenticationManager {

@@ -1,9 +1,9 @@
 package chanllenge.spring_security.authentication.architecture;
 
 import chanllenge.spring_security.authentication.context.Authentication;
+import chanllenge.spring_security.authentication.exception.AuthenticationException;
 import java.util.Collections;
 import java.util.List;
-import org.springframework.security.core.AuthenticationException;
 
 /**
  * 여러 AuthenticationProvider를 관리하는 AuthenticationManager 구현체

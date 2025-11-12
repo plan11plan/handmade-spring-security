@@ -3,12 +3,12 @@ package chanllenge.spring_security.authentication.context;
 import chanllenge.spring_security.app.domain.User;
 import chanllenge.spring_security.app.domain.UserRepository;
 import chanllenge.spring_security.app.domain.UserRole;
+import chanllenge.spring_security.authentication.exception.UserNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -46,7 +46,7 @@ class CustomUserDetailsServiceTest {
 
         // expect
         Assertions.assertThatThrownBy(() -> userDetailsService.loadUserById(nonexistentId))
-                .isInstanceOf(UsernameNotFoundException.class);
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @DisplayName("null 사용자 ID -> 예외")

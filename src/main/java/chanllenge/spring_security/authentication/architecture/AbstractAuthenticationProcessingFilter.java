@@ -3,12 +3,12 @@ package chanllenge.spring_security.authentication.architecture;
 import chanllenge.spring_security.authentication.context.Authentication;
 import chanllenge.spring_security.authentication.context.SecurityContext;
 import chanllenge.spring_security.authentication.context.SecurityContextHolder;
+import chanllenge.spring_security.authentication.exception.AuthenticationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 

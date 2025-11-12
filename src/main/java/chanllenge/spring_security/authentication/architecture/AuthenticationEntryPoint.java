@@ -1,10 +1,10 @@
 package chanllenge.spring_security.authentication.architecture;
 
+import chanllenge.spring_security.authentication.exception.AuthenticationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.springframework.security.core.AuthenticationException;
 
 public interface AuthenticationEntryPoint {
 

@@ -4,8 +4,8 @@ package chanllenge.spring_security.authentication.architecture;
 import chanllenge.spring_security.authentication.context.Authentication;
 import chanllenge.spring_security.authentication.context.CustomJwtAuthentication;
 import chanllenge.spring_security.authentication.context.UserDetailsService;
+import chanllenge.spring_security.authentication.exception.AuthenticationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.AuthenticationException;
 
 @RequiredArgsConstructor
 public class CustomJwtAuthenticationProvider implements AuthenticationProvider {

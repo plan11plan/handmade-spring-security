@@ -2,9 +2,9 @@ package chanllenge.spring_security.authentication.context;
 
 import chanllenge.spring_security.app.domain.User;
 import chanllenge.spring_security.app.domain.UserRepository;
+import chanllenge.spring_security.authentication.exception.UserNotFoundException;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,9 +14,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
+    public UserDetails loadUserById(Long id) throws UserNotFoundException {
         User entityUser = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(ERROR_USER_NOTFOUND + id));
+                .orElseThrow(() -> new UserNotFoundException(ERROR_USER_NOTFOUND + id));
 
         return new CustomUserDetails(
                 entityUser.getUsername(),
