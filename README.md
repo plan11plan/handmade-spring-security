@@ -165,10 +165,9 @@
   - [x] 인증 여부를 체크한다 (AuthenticatedAuthorizationManager)
   - [x] 역할 기반 권한을 체크한다 (AuthorityAuthorizationManager)
   - [x] URL 패턴 기반으로 권한을 위임한다 (RequestMatcherDelegatingAuthorizationManager)
-
 - 메서드 기반 권한 플로우
   - [ ]
-
+- [x] 권한 필터 구현
 
 ### 📌 인증 여부 체크 (AuthenticatedAuthorizationManager)
 - [x] 인증 여부를 검사한다
@@ -221,4 +220,18 @@
 - [x] 순서 보장
   - 먼저 추가된 패턴부터 검사하기
   - anyRequest()는 마지막에만 추가 가능
+
+### 📌 권한 필터 (AuthorizationFilter)
+
+- [x] HTTP 요청에 대한 권한 검사 수행
+  - SecurityContextHolder에서 인증 정보 조회
+  - AuthorizationManager에게 권한 검사 위임
+  - 권한 거부 시 적절한 핸들러 호출
+- [x] 익명 사용자 처리
+  - 인증되지 않은 사용자 -> 401 예외
+- [x] 인증된 사용자의 권한 부족 처리
+  - 인증되었지만 권한 없음 -> 403 예외
+- [x] 필터 체인 통합
+  - 권한 허용 시 다음 필터로 진행
+  - 권한 거부 시 필터 체인 중단
 
