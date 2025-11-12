@@ -161,10 +161,13 @@
 ## 4️⃣ 권한 아키텍처 구현하기
 ###  ✅ 구현 완료 조건
 
-- request 요청 플로우
+- 요청 기반 권한 플로우
   - [x] 인증 여부를 체크한다 (AuthenticatedAuthorizationManager)
   - [x] 역할 기반 권한을 체크한다 (AuthorityAuthorizationManager)
+  - [x] URL 패턴 기반으로 권한을 위임한다 (RequestMatcherDelegatingAuthorizationManager)
 
+- 메서드 기반 권한 플로우
+  - [ ]
 
 
 ### 📌 인증 여부 체크 (AuthenticatedAuthorizationManager)
@@ -196,4 +199,26 @@
 - [x] OR 조건 동작 검증
   - 여러 권한 중 하나만 있어도 허용
   - 여러 권한을 모두 가지고 있어도 허용
+
+### 📌 URL 패턴 기반 권한 위임 (RequestMatcherDelegatingAuthorizationManager)
+
+- [x] Builder 패턴으로 매핑 설정
+  - add() - RequestMatcher와 AuthorizationManager 매핑
+  - requestMatchers() - 여러 패턴을 하나의 AuthorizationManager에 매핑
+  - anyRequest() - 모든 요청에 대한 기본 규칙
+- [x] 권한 검사 위임
+  - URL 패턴 매칭
+  - 매칭된 AuthorizationManager에게 권한 검사 위임
+  - 매칭 실패 시 거부
+- [x] AuthorizedUrl DSL
+  - permitAll() - 모두 허용
+  - denyAll() - 모두 거부
+  - authenticated() - 인증된 사용자만
+  - hasRole() - 특정 역할
+  - hasAnyRole() - 여러 역할 중 하나
+  - hasAuthority() - 특정 권한
+  - hasAnyAuthority() - 여러 권한 중 하나
+- [x] 순서 보장
+  - 먼저 추가된 패턴부터 검사하기
+  - anyRequest()는 마지막에만 추가 가능
 
