@@ -108,6 +108,6 @@ class CustomUserDetailsServiceTest {
         Assertions.assertThat(foundUser.getAuthorities()).hasSize(1);
         Assertions.assertThat(foundUser.getAuthorities())
                 .extracting(authority -> authority.getAuthority())
-                .contains("ADMIN");
+                .contains("ROLE_ADMIN");
     }
 }

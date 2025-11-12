@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new CustomUserDetails(
                 entityUser.getUsername(),
-                Collections.singletonList(new SimpleGrantedAuthority(entityUser.getRole().toString()))
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + entityUser.getRole().toString()))
         );
     }
 

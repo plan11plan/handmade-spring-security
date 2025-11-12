@@ -52,21 +52,29 @@ class CustomJwtAuthenticationProviderTest {
         Assertions.assertThat(((CustomJwtAuthentication) result).getUserId()).isEqualTo(user.getId());
     }
 
-    @DisplayName("인증 후 원본 객체를 반환한다.")
+    @DisplayName("인증 후 실제 권한으로 새 인증 객체를 반환한다.")
     @Test
-    void authenticate_returnsOriginalAuthentication() {
+    void authenticate_returnsAuthenticationWithActualAuthorities() {
         // given
         User user = userRepository.save(new User("adminuser", UserRole.ADMIN));
         CustomJwtAuthentication original = new CustomJwtAuthentication(
                 user.getId(),
-                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
 
         // when
         Authentication result = provider.authenticate(original);
 
         // then
-        Assertions.assertThat(result).isSameAs(original);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.isAuthenticated()).isTrue();
+        Assertions.assertThat(result).isInstanceOf(CustomJwtAuthentication.class);
+        CustomJwtAuthentication jwtAuth = (CustomJwtAuthentication) result;
+        Assertions.assertThat(jwtAuth.getUserId()).isEqualTo(user.getId());
+        Assertions.assertThat(jwtAuth.getAuthorities()).hasSize(1);
+        Assertions.assertThat(jwtAuth.getAuthorities())
+                .extracting(authority -> authority.getAuthority())
+                .contains("ROLE_ADMIN");
     }
 
     @DisplayName("존재하지 않는 사용자 -> 예외")

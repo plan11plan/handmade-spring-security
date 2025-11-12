@@ -3,6 +3,7 @@ package chanllenge.spring_security.authentication.architecture;
 
 import chanllenge.spring_security.authentication.context.Authentication;
 import chanllenge.spring_security.authentication.context.CustomJwtAuthentication;
+import chanllenge.spring_security.authentication.context.UserDetails;
 import chanllenge.spring_security.authentication.context.UserDetailsService;
 import chanllenge.spring_security.authentication.exception.AuthenticationException;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,11 @@ public class CustomJwtAuthenticationProvider implements AuthenticationProvider {
         CustomJwtAuthentication jwtAuthentication = (CustomJwtAuthentication) authentication;
         Long userId = jwtAuthentication.getUserId();
 
-        // 존재하지 않으면 UsernameNotFoundException 발생
-        userDetailsService.loadUserById(userId);
+        // 사용자 존재 여부 확인 및 실제 권한 정보 로드
+        UserDetails userDetails = userDetailsService.loadUserById(userId);
 
-        // CustomJwtAuthentication은 생성 시점에 이미 authenticated=true여서 원본 객체를 그대로 반환
-        return jwtAuthentication;
+        // 실제 DB의 권한으로 새로운 인증 객체 생성
+        return new CustomJwtAuthentication(userId, userDetails.getAuthorities());
     }
 
     @Override
