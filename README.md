@@ -175,3 +175,20 @@
 - [x] 정적 팩토리 메서드를 제공한다
     - authenticated() -> 인증된 사용자만
     - fullyAuthenticated() -> 완전 인증된 사용자만
+
+### 📌 권한 기반 체크 (AuthorityAuthorizationManager)
+현재 사용자에게 권한이 부여되었는지 확인하는
+- [] 필요한 권한을 설정한다
+    - 생성자로 권한 목록 받기
+    - 빈 목록도 허용
+- [ ] RoleHierarchy를 설정한다.
+  - 기본은 NullRoleHierarchy다
+  - null 이면 -> 예외
+- [ ] hasRole() 메서드를 제공한다
+    - "ROLE_" 접두사가 없으면 -> 예외
+    - AuthorityAuthorizationManager의 인스턴스를 만든다.
+- [ ] hasAnyRole() 메서드를 제공한다 (OR 조건)
+    - 여러 역할 중 하나라도 있으면 허용한다.
+    - 요소에 "ROLE_" 접두사가 없으면 -> 예외
+- [ ] 사용자 권한을 검사한다.
+
