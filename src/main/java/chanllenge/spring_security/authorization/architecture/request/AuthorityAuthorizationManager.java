@@ -1,22 +1,14 @@
 package chanllenge.spring_security.authorization.architecture.request;
 
 import chanllenge.spring_security.authentication.context.Authentication;
-import chanllenge.spring_security.authentication.context.GrantedAuthority;
 import chanllenge.spring_security.authorization.architecture.AuthorizationManager;
 import chanllenge.spring_security.authorization.model.AuthorizationResult;
-import chanllenge.spring_security.authorization.model.CustomAuthorizationDecision;
-import java.util.Collection;
 import java.util.Set;
 import java.util.function.Supplier;
-import org.springframework.security.access.hierarchicalroles.NullRoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.util.Assert;
 
 public final class AuthorityAuthorizationManager<T> implements AuthorizationManager<T> {
 
-    private static final String ROLE_PREFIX = "ROLE_";
-
-    private static final String ERROR_ROLE_HIERARCHY_NULL = "roleHierarchy는 null일 수 없습니다";
     private static final String ERROR_ROLE_NULL = "role은 null일 수 없습니다";
     private static final String ERROR_ROLE_STARTS_WITH_PREFIX = "'%s'는 %s로 시작하면 안 됩니다. hasRole 사용 시 %s가 자동으로 앞에 붙습니다. 대신 hasAuthority 사용을 고려하세요.";
     private static final String ERROR_AUTHORITY_NULL = "authority는 null일 수 없습니다";
@@ -26,7 +18,9 @@ public final class AuthorityAuthorizationManager<T> implements AuthorizationMana
     private static final String ERROR_AUTHORITIES_CONTAIN_NULL = "authorities는 null 값을 포함할 수 없습니다";
     private static final String ERROR_ROLE_STARTS_WITH_PREFIX_ANY_ROLE = "'%s'는 %s로 시작하면 안 됩니다. hasAnyRole 사용 시 %s가 자동으로 앞에 붙습니다. 대신 hasAnyAuthority 사용을 고려하세요.";
 
-    private RoleHierarchy roleHierarchy = new NullRoleHierarchy();
+    private static final String ROLE_PREFIX = "ROLE_";
+
+    private final AuthoritiesAuthorizationManager delegate = new AuthoritiesAuthorizationManager();
 
     private final Set<String> authorities;
 
@@ -34,33 +28,14 @@ public final class AuthorityAuthorizationManager<T> implements AuthorizationMana
         this.authorities = Set.of(authorities);
     }
 
+
     public void setRoleHierarchy(RoleHierarchy roleHierarchy) {
-        Assert.notNull(roleHierarchy, ERROR_ROLE_HIERARCHY_NULL);
-        this.roleHierarchy = roleHierarchy;
+        this.delegate.setRoleHierarchy(roleHierarchy);
     }
 
     @Override
     public AuthorizationResult authorize(Supplier<Authentication> authentication, T object) {
-        Authentication auth = authentication.get();
-
-        if (auth == null) {
-            return new CustomAuthorizationDecision(false);
-        }
-
-        Collection<? extends GrantedAuthority> userAuthorities = auth.getAuthorities();
-        if (userAuthorities == null || userAuthorities.isEmpty()) {
-            return new CustomAuthorizationDecision(false);
-        }
-
-        for (GrantedAuthority grantedAuthority : userAuthorities) {
-            String authority = grantedAuthority.getAuthority();
-
-            if (this.authorities.contains(authority)) {
-                return new CustomAuthorizationDecision(true);
-            }
-        }
-
-        return new CustomAuthorizationDecision(false);
+        return this.delegate.authorize(authentication, this.authorities);
     }
 
     public static <T> AuthorityAuthorizationManager<T> hasRole(String role) {
