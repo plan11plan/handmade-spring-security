@@ -1,4 +1,4 @@
-package chanllenge.spring_security.authentication.architecture;
+package chanllenge.spring_security.authentication.filter;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -8,6 +8,9 @@ import static org.mockito.Mockito.verify;
 import chanllenge.spring_security.app.domain.User;
 import chanllenge.spring_security.app.domain.UserRepository;
 import chanllenge.spring_security.app.domain.UserRole;
+import chanllenge.spring_security.authentication.architecture.CustomAuthenticationEntryPoint;
+import chanllenge.spring_security.authentication.architecture.CustomJwtAuthenticationProvider;
+import chanllenge.spring_security.authentication.architecture.CustomProviderManager;
 import chanllenge.spring_security.authentication.context.Authentication;
 import chanllenge.spring_security.authentication.context.SecurityContextHolder;
 import chanllenge.spring_security.authentication.context.UserDetailsService;

@@ -1,5 +1,7 @@
-package chanllenge.spring_security.authentication.architecture;
+package chanllenge.spring_security.authentication.filter;
 
+import chanllenge.spring_security.authentication.architecture.AuthenticationEntryPoint;
+import chanllenge.spring_security.authentication.architecture.AuthenticationManager;
 import chanllenge.spring_security.authentication.context.Authentication;
 import chanllenge.spring_security.authentication.context.CustomJwtAuthentication;
 import chanllenge.spring_security.authentication.context.SimpleGrantedAuthority;
