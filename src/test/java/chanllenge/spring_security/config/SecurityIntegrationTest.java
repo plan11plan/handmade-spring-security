@@ -112,23 +112,23 @@ class SecurityIntegrationTest {
     }
 
     @Nested
-    @DisplayName("인증 정보 없음 - 다음 필터로 전달")
+    @DisplayName("인증 정보 없음 - 인증 필터 통과하나 권한 필터에서 차단")
     class NoAuthenticationTest {
 
-        @DisplayName("Authorization 헤더 없음 -> 다음 필터로 전달 (200)")
+        @DisplayName("Authorization 헤더 없음 -> 인증 필터 통과 -> 권한 필터에서 401")
         @Test
-        void noAuthorizationHeader_passesThrough() throws Exception {
-            // expect
+        void noAuthorizationHeader_passesAuthenticationButFailsAuthorization() throws Exception {
+            // expect: 인증 필터는 통과하나 권한 필터에서 401 반환
             mockMvc.perform(get(PROTECTED_ENDPOINT))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isUnauthorized());
         }
 
-        @DisplayName("Bearer 아닌 헤더 -> 다음 필터로 전달 (200)")
+        @DisplayName("Bearer 아닌 헤더 -> 인증 필터 통과 -> 권한 필터에서 401")
         @Test
-        void nonBearerHeader_passesThrough() throws Exception {
-            // expect
+        void nonBearerHeader_passesAuthenticationButFailsAuthorization() throws Exception {
+            // expect: 인증 필터는 통과하나 권한 필터에서 401 반환
             mockMvc.perform(get(PROTECTED_ENDPOINT).header(AUTHORIZATION_HEADER, BASIC_AUTH_TOKEN))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isUnauthorized());
         }
     }
 
