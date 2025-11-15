@@ -2,11 +2,11 @@ package chanllenge.spring_security.authorization.architecture.method.expression;
 
 import chanllenge.spring_security.authentication.context.Authentication;
 import chanllenge.spring_security.authentication.context.GrantedAuthority;
+import chanllenge.spring_security.authentication.exception.AuthenticationCredentialsNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.springframework.util.Assert;
 
 public class MethodSecurityExpressionRoot {
 
@@ -15,7 +15,9 @@ public class MethodSecurityExpressionRoot {
     private Object target;
 
     public MethodSecurityExpressionRoot(Authentication authentication) {
-        Assert.notNull(authentication, "Authentication은 null일 수 없습니다.");
+        if (authentication == null) {
+            throw new AuthenticationCredentialsNotFoundException("인증 정보를 찾을 수 없습니다.");
+        }
         this.authentication = authentication;
     }
 
