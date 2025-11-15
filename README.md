@@ -241,7 +241,7 @@
 
 ---
 
-## 📋phase-5-authrozation-method
+## 📋phase-4-2-authrozation-method
 ###  ✅ 컴포넌트 Flow
 스프링 AOP가 프록시 메서드를 호출한다. 프록시의 다른 어드바이저 중에서 포인트 컷과 일치하는 것을 호출한다.
 <br> 이것이 아래 인터셉터다.
@@ -315,6 +315,8 @@ static Advisor postAuthorizeMethodInterceptor() {
 
 ## 4-2 Method Security 아키텍처 구현하기
 ###  ✅ 구현 완료 조건
+- [x] 메서드 실행 전 권한을 검사한다.
+- [ ] 메서드 실행 후 권한을 검사한다.
 - [x] @PreAuthorize에서 Authentication 메서드에 액세스할 수 있는지 확인한다.
 - [x] @PostAuthorize에서 Authentication 반환된 개체에 액세스할 수 있는지 확인한다.
 - [x] 메서드 보안에서 사용할 표현식 메서드 제공
@@ -376,3 +378,16 @@ static Advisor postAuthorizeMethodInterceptor() {
   - returnObject 포함하여 표현식 평가
   - 표현식이 true면 승인, false면 거부
   - @PostAuthorize 없으면 null 반환
+
+### 📌 AuthorizationManagerBeforeMethodInterceptor
+- [x] 메서드 실행 전 권한을 검사한다.
+    - @PreAuthorize가 있는 메서드를 가로챈다.
+    - PreAuthorizeAuthorizationManager로 권한 검사
+    - 권한 있으면 메서드 실행, 없으면 AuthorizationDeniedException
+
+### 📌 AuthorizationManagerAfterMethodInterceptor
+- [ ] 메서드 실행 후 권한을 검사한다.
+    - @PostAuthorize가 있는 메서드를 가로챈다
+    - 메서드 먼저 실행하여 반환값 획득
+    - PostAuthorizeAuthorizationManager로 권한 검사
+    - 권한 있으면 반환값 반환, 없으면 AuthorizationDeniedException
