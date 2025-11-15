@@ -335,21 +335,12 @@ static Advisor postAuthorizeMethodInterceptor() {
 - [x] 여러 권한 중 하나를 검사한다.
   - hasAnyAuthority("READ", "WRITE") -> 하나라도 보유 시 true
   - hasAnyAuthority("READ", "WRITE") -> 모두 없으면 false
-- [x] 모든 접근을 허용한다.
-  - permitAll() -> 항상 true
-- [x] 모든 접근을 거부한다.
-  - denyAll() -> 항상 false
 - [x] 인증 여부를 검사한다.
   - isAuthenticated() -> 인증된 경우 true
   - isAuthenticated() -> 인증되지 않은 경우 false
 - [x] 익명 여부를 검사한다.
   - isAnonymous() -> 인증되지 않은 경우 true
   - isAnonymous() -> 인증된 경우 false
-- [x] 완전 인증 여부를 검사한다.
-  - isFullyAuthenticated() -> 인증된 경우 true
-  - isFullyAuthenticated() -> Remember-Me 인증은 false
-- [x] Remember-Me 여부를 검사한다.
-  - isRememberMe() -> 항상 false
 - [x] 권한을 조회한다.
   - getAuthentication() -> Authentication 반환
 - [x] Principal을 조회한다.
@@ -375,11 +366,13 @@ static Advisor postAuthorizeMethodInterceptor() {
 - [x] hasRole 표현식이 작동한다.
 - [x] hasAuthority 표현식이 작동한다.
 
-### 📌 PreAuthorize @어노테이션 표현식을 평가하여 Authentication MethodInvocation 호출할 수 있는지 여부 결정하기( PreAuthorizeAuthorizationManager)
-- [x] @PreAuthorize에서 Authentication 메서드에 액세스 확인 기능 구현
-  - PreAuthorize @어노테이션의 표현식을 평가한다.
-  - AuthorizationDecision 또는 PreAuthorize 주석이 없는 경우 ->  null
-### 📌 Authentication 이 PostAuthorize @어노테이션 표현식을 평가하여 호출된 MethodInvocation 의 결과를 반환할 수 있는지 여부 결정하기 (PostAuthorizeAuthorizationManager)
-- [x] @PostAuthorize Authentication 반환된 개체에 액세스 확인 기능 구현
-  - PostAuthorize @어노테이션의 표현식을 평가한다.
-  - AuthorizationDecision 또는 PostAuthorize 주석이 없는 경우 -> null
+### 📌 PreAuthorizeAuthorizationManager
+- [x] @PreAuthorize 표현식을 평가한다.
+  - 표현식이 true면 승인, false면 거부
+  - @PreAuthorize 없으면 null 반환
+
+### 📌 PostAuthorizeAuthorizationManager
+- [x] @PostAuthorize 표현식을 평가한다.
+  - returnObject 포함하여 표현식 평가
+  - 표현식이 true면 승인, false면 거부
+  - @PostAuthorize 없으면 null 반환
