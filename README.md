@@ -370,3 +370,5 @@ static Advisor postAuthorizeMethodInterceptor() {
   - rootObject가 MethodSecurityExpressionRoot가 아님 -> IllegalStateException
 - [x] filter 호출 시 예외를 발생시킨다.
   - filter() -> UnsupportedOperationException
+- [x] hasRole 표현식이 작동한다.
+- [x] hasAuthority 표현식이 작동한다.

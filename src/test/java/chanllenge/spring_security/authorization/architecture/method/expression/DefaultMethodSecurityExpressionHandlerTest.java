@@ -29,6 +29,51 @@ class DefaultMethodSecurityExpressionHandlerTest {
         Mockito.when(methodInvocation.getMethod()).thenReturn(Object.class.getMethod("toString"));
     }
 
+    @DisplayName("hasRole('ADMIN') 표현식 평가 - true")
+    @Test
+    void evaluate_hasRole_true() {
+        // given
+        EvaluationContext ctx = handler.createEvaluationContext(authentication, methodInvocation);
+        String expressionString = "hasRole('ADMIN')";
+
+        // when
+        Expression expression = handler.getExpressionParser().parseExpression(expressionString);
+        Boolean result = expression.getValue(ctx, Boolean.class);
+
+        // then
+        Assertions.assertThat(result).isTrue();
+    }
+
+    @DisplayName("hasRole('MANAGER') 표현식 평가 - false")
+    @Test
+    void evaluate_hasRole_false() {
+        // given
+        EvaluationContext ctx = handler.createEvaluationContext(authentication, methodInvocation);
+        String expressionString = "hasRole('MANAGER')";
+
+        // when
+        Expression expression = handler.getExpressionParser().parseExpression(expressionString);
+        Boolean result = expression.getValue(ctx, Boolean.class);
+
+        // then
+        Assertions.assertThat(result).isFalse();
+    }
+
+    @DisplayName("hasAuthority('ROLE_ADMIN') 표현식 평가")
+    @Test
+    void evaluate_hasAuthority() {
+        // given
+        EvaluationContext ctx = handler.createEvaluationContext(authentication, methodInvocation);
+        String expressionString = "hasAuthority('ROLE_ADMIN')";
+
+        // when
+        Expression expression = handler.getExpressionParser().parseExpression(expressionString);
+        Boolean result = expression.getValue(ctx, Boolean.class);
+
+        // then
+        Assertions.assertThat(result).isTrue();
+    }
+
     @DisplayName("getExpressionParser() -> SpelExpressionParser 반환")
     @Test
     void getExpressionParser_returnsSpelExpressionParser() {
