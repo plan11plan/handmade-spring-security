@@ -42,15 +42,15 @@ class PreAuthorizeAuthorizationManagerTest {
 
     @DisplayName("null ExpressionHandler로 생성 시 예외 발생")
     @Test
-    void createWithNullHandler_throwsException() {
+    void createWithNullHandler_exception() {
         // expect
         Assertions.assertThatThrownBy(() -> new PreAuthorizeAuthorizationManager(null))
                 .isInstanceOf(Exception.class);
     }
 
-    @DisplayName("표현식 평가 결과가 true이면 granted 반환")
+    @DisplayName("표현식 평가 결과가 true이면 true 반환")
     @Test
-    void authorize_expressionTrue_returnsGranted() throws Exception {
+    void authorize_expressionTrue_then_true() throws Exception {
         // given
         MethodInvocation invocation = createMethodInvocation("hasRoleAdmin", "hasRole('ADMIN')");
 
@@ -62,9 +62,9 @@ class PreAuthorizeAuthorizationManagerTest {
         Assertions.assertThat(result.isGranted()).isTrue();
     }
 
-    @DisplayName("표현식 평가 결과가 false이면 denied 반환")
+    @DisplayName("표현식 평가 결과가 false이면 false 반환")
     @Test
-    void authorize_expressionFalse_returnsDenied() throws Exception {
+    void authorize_expressionFalse_then_false() throws Exception {
         // given
 
         MethodInvocation invocation = createMethodInvocation("hasRoleA", "hasRole('A')");
@@ -124,9 +124,7 @@ class PreAuthorizeAuthorizationManagerTest {
         };
     }
 
-    // Test classes
-
-    static class TestService {
+    class TestService {
 
         @PreAuthorize("hasRole('ADMIN')")
         public void hasRoleAdmin() {
