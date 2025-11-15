@@ -315,8 +315,9 @@ static Advisor postAuthorizeMethodInterceptor() {
 
 ## 5️⃣ Method Security 아키텍처 구현하기
 ###  ✅ 구현 완료 조건
+- [ ] Authentication 메서드에 액세스할 수 있는지 확인한다.
 - [x] 메서드 보안에서 사용할 표현식 메서드 제공
-- [ ] el 보안 표현식을 파싱하고 검증한다
+- [x] el 보안 표현식을 파싱하고 검증한다
 ### 📌 메서드 보안에서 사용 가능한 모든 표현식 메서드 제공 기능 (MethodSecurityExpressionRoot)
 
 - [x] MethodSecurityExpressionRoot를 생성한다.
@@ -372,3 +373,12 @@ static Advisor postAuthorizeMethodInterceptor() {
   - filter() -> UnsupportedOperationException
 - [x] hasRole 표현식이 작동한다.
 - [x] hasAuthority 표현식이 작동한다.
+
+### 📌 PreAuthorize @어노테이션 표현식을 평가하여 Authentication MethodInvocation 호출할 수 있는지 여부 결정하기( PreAuthorizeAuthorizationManager)
+- Authentication 메서드에 액세스할 수 있는지 확인한다.
+  - PreAuthorize @어노테이션의 표현식을 평가한다.
+  - AuthorizationDecision 또는 PreAuthorize 주석이 없는 경우 ->  null
+### 📌 Authentication 이 PostAuthorize @어노테이션 표현식을 평가하여 호출된 MethodInvocation 의 결과를 반환할 수 있는지 여부 결정하기 (PostAuthorizeAuthorizationManager)
+- Authentication 반환된 개체에 액세스할 수 있는지 확인한다.
+  - PostAuthorize @어노테이션의 표현식을 평가한다.
+  - AuthorizationDecision 또는 PostAuthorize 주석이 없는 경우 -> null
