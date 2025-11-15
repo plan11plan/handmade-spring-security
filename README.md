@@ -238,4 +238,131 @@
 ### 📌 메서드 권한 접근 어노테이션
 - [x] @PreAuthorize 추가
 - [x] @PostAuthorize 추가
-- 
+
+---
+
+## 📋phase-5-authrozation-method
+###  ✅ 컴포넌트 Flow
+스프링 AOP가 프록시 메서드를 호출한다. 프록시의 다른 어드바이저 중에서 포인트 컷과 일치하는 것을 호출한다.
+<br> 이것이 아래 인터셉터다.
+- AuthorizationManager`Before`MethodInterceptor
+  - `Pre`AuthorizeAuthorizationManager
+    - `MethodSecurityExpressionHandler`
+      - EvaluationContext
+        - MethodSecurityExpressionRoot
+            - Supplier<Authentication>
+            - MethodInvocation
+  - 인가 검증 통과 -> success
+  - 인가 검증 실패 -> AccessDeniedException 이벤트 더짐 -> ExceptionTranslationFilter가 포착하고 403 상태 코드 반환
+
+- AuthorizationManager`After`MethodInterceptor
+    - `Post`AuthorizeAuthorizationManager
+        - `MethodSecurityExpressionHandler`
+            - EvaluationContext
+                - MethodSecurityExpressionRoot
+                    - Supplier<Authentication>
+                    - MethodInvocation
+    - 인가 검증 통과 -> success
+    - 인가 검증 실패 -> AccessDeniedException
+
+###  ✅ 주의점
+- 각 Each Annotation Has Its Own Method Interceptor 가지고 있음
+- 각 Each annotation has its own dedicated method interceptor 가지고 있음. 
+  - 예를들어
+  - For @PreAuthorize, Spring Security uses AuthorizationManagerBeforeMethodInterceptor#preAuthorize, which in turn uses PreAuthorizeAuthorizationManager 
+  - For @PostAuthorize, Spring Security uses AuthorizationManagerAfterMethodInterceptor#postAuthorize, which in turn uses PostAuthorizeAuthorizationManager
+
+###  ✅ 인터셉처 추가 방법
+```
+@Bean
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+static Advisor preAuthorizeMethodInterceptor() {
+    return AuthorizationManagerBeforeMethodInterceptor.preAuthorize();
+}
+
+@Bean
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+static Advisor postAuthorizeMethodInterceptor() {
+    return AuthorizationManagerAfterMethodInterceptor.postAuthorize();
+}
+
+```
+요청 권한 검증 vs 메서드 권한 검증
+![img.png](img.png)
+
+---
+###  SecurityExpressionHandler
+- ExpressionParser getExpressionParser();
+- EvaluationContext createEvaluationContext(Authentication authentication, T invocation);
+
+### MethodSecurityExpressionHandler
+- 서브 구현체 DefaultMethodSecurityExpressionHandler
+- EvaluationContext context = handler.createEvaluationContext(auth, invocation);
+  - createEvaluationContext에서 Root 생성
+- Object returnValue = methodInvocation.proceed();
+- EvaluationContext.setReturnObject(returnValue, ctx);
+
+### MethodSecurityExpressionRoot
+- boolean hasAdmin = root.hasRole("ADMIN") 이거 하는 객체
+
+- 생성자에 Authentication를 주입받아 생성
+- root.setTarget(targetObject);
+- root.setArguments(methodArgs);
+- root.setReturnObject(returnValue);
+
+
+---
+
+## 5️⃣ Method Security 아키텍처 구현하기
+###  ✅ 구현 완료 조건
+- [x] 메서드 보안에서 사용할 표현식 메서드 제공
+- [ ] el 보안 표현식을 파싱하고 검증한다
+### 📌 메서드 보안에서 사용 가능한 모든 표현식 메서드 제공 기능 (MethodSecurityExpressionRoot)
+
+- [x] MethodSecurityExpressionRoot를 생성한다.
+  - null Authentication -> 예외
+- [x] 역할을 검사한다.
+  - hasRole("ADMIN") -> ROLE_ADMIN 권한 보유 시 true
+  - hasRole("ADMIN") -> ROLE_ADMIN 권한 없으면 false
+- [x] 권한을 검사한다.
+  - hasAuthority("ROLE_USER") -> 해당 권한 보유 시 true
+  - hasAuthority("ROLE_USER") -> 해당 권한 없으면 false
+- [x] 여러 역할 중 하나를 검사한다.
+  - hasAnyRole("ADMIN", "USER") -> 하나라도 보유 시 true
+  - hasAnyRole("ADMIN", "USER") -> 모두 없으면 false
+- [x] 여러 권한 중 하나를 검사한다.
+  - hasAnyAuthority("READ", "WRITE") -> 하나라도 보유 시 true
+  - hasAnyAuthority("READ", "WRITE") -> 모두 없으면 false
+- [x] 모든 접근을 허용한다.
+  - permitAll() -> 항상 true
+- [x] 모든 접근을 거부한다.
+  - denyAll() -> 항상 false
+- [x] 인증 여부를 검사한다.
+  - isAuthenticated() -> 인증된 경우 true
+  - isAuthenticated() -> 인증되지 않은 경우 false
+- [x] 익명 여부를 검사한다.
+  - isAnonymous() -> 인증되지 않은 경우 true
+  - isAnonymous() -> 인증된 경우 false
+- [x] 완전 인증 여부를 검사한다.
+  - isFullyAuthenticated() -> 인증된 경우 true
+  - isFullyAuthenticated() -> Remember-Me 인증은 false
+- [x] Remember-Me 여부를 검사한다.
+  - isRememberMe() -> 항상 false
+- [x] 권한을 조회한다.
+  - getAuthentication() -> Authentication 반환
+- [x] Principal을 조회한다.
+  - getPrincipal() -> Principal 반환
+- [x] 반환값을 설정하고 조회한다.
+  - setReturnObject() -> 반환값 설정
+  - getReturnObject() -> 설정된 반환값 조회
+- [x] 대상 객체를 설정하고 조회한다.
+  - setTarget() -> 대상 객체 설정
+  - getTarget() -> 설정된 대상 객체 조회
+
+### 📌 Expression Handler (DefaultMethodSecurityExpressionHandler)
+- [ ] ExpressionParser를 조회한다.
+  - getExpressionParser() -> SpelExpressionParser 반환
+- [ ] EvaluationContext를 생성한다.
+  - createEvaluationContext() -> StandardEvaluationContext 반환
+  - createEvaluationContext() -> MethodSecurityExpressionRoot를 root로 설정
+- [ ] 반환값을 EvaluationContext에 설정한다.
