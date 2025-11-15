@@ -359,10 +359,14 @@ static Advisor postAuthorizeMethodInterceptor() {
   - setTarget() -> 대상 객체 설정
   - getTarget() -> 설정된 대상 객체 조회
 
-### 📌 Expression Handler (DefaultMethodSecurityExpressionHandler)
-- [ ] ExpressionParser를 조회한다.
+### 📌 el 보안 표현식을 파싱하고 검증하는 기능 (DefaultMethodSecurityExpressionHandler)
+- [x] ExpressionParser를 조회한다.
   - getExpressionParser() -> SpelExpressionParser 반환
-- [ ] EvaluationContext를 생성한다.
+- [x] EvaluationContext를 생성한다.
   - createEvaluationContext() -> StandardEvaluationContext 반환
   - createEvaluationContext() -> MethodSecurityExpressionRoot를 root로 설정
-- [ ] 반환값을 EvaluationContext에 설정한다.
+- [x] 반환값을 EvaluationContext에 설정한다.
+  - setReturnObject() -> root의 returnObject 설정
+  - rootObject가 MethodSecurityExpressionRoot가 아님 -> IllegalStateException
+- [x] filter 호출 시 예외를 발생시킨다.
+  - filter() -> UnsupportedOperationException
