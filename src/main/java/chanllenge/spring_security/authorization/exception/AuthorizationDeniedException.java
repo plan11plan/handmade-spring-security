@@ -3,7 +3,7 @@ package chanllenge.spring_security.authorization.exception;
 import chanllenge.spring_security.authorization.model.AuthorizationResult;
 
 
-public class AuthorizationDeniedException extends RuntimeException {
+public class AuthorizationDeniedException extends AccessDeniedException {
 
     private final AuthorizationResult authorizationResult;
 
@@ -29,3 +29,4 @@ public class AuthorizationDeniedException extends RuntimeException {
         return this.authorizationResult;
     }
 }
+
