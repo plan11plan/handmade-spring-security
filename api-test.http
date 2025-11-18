@@ -1,0 +1,121 @@
+# Method Security 통합 테스트 - 유스케이스 플로우
+
+### 1. 사용자 생성 (인증 불필요)
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "testuser1",
+  "role": "USER"
+}
+
+### 2. ADMIN 사용자 생성
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "adminuser",
+  "role": "ADMIN"
+}
+
+### 3. 일반 USER 생성
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "testuser2",
+  "role": "USER"
+}
+
+### ============================================
+### @PreAuthorize("isAuthenticated()") 테스트
+### ============================================
+
+### 4. 사용자 조회 - 인증 없이 (401 예상)
+# 결과: {"error":"Unauthorized","message":"인증 정보를 찾을 수 없습니다."}
+GET http://localhost:8080/api/users/1
+
+### 5. 사용자 조회 - 인증 있음 (성공)
+# 결과: {"id":1,"username":"testuser1","role":"USER"}
+GET http://localhost:8080/api/users/1
+X-User-Id: 1
+X-User-Role: USER
+
+### 6. 타인 정보 조회 - 인증 있음 (성공, PreAuthorize는 인증만 체크)
+# 결과: {"id":2,"username":"adminuser","role":"ADMIN"}
+GET http://localhost:8080/api/users/2
+X-User-Id: 1
+X-User-Role: USER
+
+### ============================================
+### @PostAuthorize 테스트 (본인 확인)
+### ============================================
+
+### 7. 본인 프로필 조회 - 성공 (PostAuthorize 통과)
+# 결과: {"id":1,"username":"testuser1","role":"USER","message":"본인 프로필 조회 성공"}
+GET http://localhost:8080/api/users/1/profile
+X-User-Id: 1
+X-User-Role: USER
+
+### 8. 타인 프로필 조회 - 실패 (PostAuthorize 차단, 403 예상)
+# 결과: {"error":"Forbidden","message":"접근이 거부되었습니다: getMyProfile"}
+GET http://localhost:8080/api/users/2/profile
+X-User-Id: 1
+X-User-Role: USER
+
+### 9. 프로필 조회 - 인증 없음 (401 예상)
+# 결과: {"error":"Unauthorized","message":"인증 정보를 찾을 수 없습니다."}
+GET http://localhost:8080/api/users/1/profile
+
+### ============================================
+### @PreAuthorize("hasRole('ADMIN')") 테스트
+### ============================================
+
+### 10. USER 역할로 삭제 시도 - 실패 (403 예상)
+# 결과: {"error":"Forbidden","message":"접근이 거부되었습니다: deleteUser"}
+DELETE http://localhost:8080/api/users/2
+X-User-Id: 1
+X-User-Role: USER
+
+### 11. ADMIN 역할로 삭제 - 성공
+# 결과: {"message":"사용자 삭제 완료","deletedUserId":"2"}
+DELETE http://localhost:8080/api/users/2
+X-User-Id: 2
+X-User-Role: ADMIN
+
+### 12. 삭제 - 인증 없음 (401 예상)
+# 결과: {"error":"Unauthorized","message":"인증 정보를 찾을 수 없습니다."}
+DELETE http://localhost:8080/api/users/1
+
+### ============================================
+### 권한 검사 없음 (Public 엔드포인트)
+### ============================================
+
+### 13. Public 엔드포인트 - 인증 없이 접근 (성공)
+# 결과: {"id":1,"username":"testuser1","role":"USER","message":"권한 검사 없음 - 누구나 접근 가능"}
+GET http://localhost:8080/api/users/1/public
+
+### 14. Public 엔드포인트 - 인증 있어도 접근 가능 (성공)
+# 결과: {"id":2,"username":"adminuser","role":"ADMIN","message":"권한 검사 없음 - 누구나 접근 가능"}
+GET http://localhost:8080/api/users/2/public
+X-User-Id: 1
+X-User-Role: USER
+
+### ============================================
+### 현재 인증 정보 확인 엔드포인트
+### ============================================
+
+### 15. 현재 사용자 정보 확인 - USER
+GET http://localhost:8080/api/users/me
+X-User-Id: 1
+X-User-Role: USER
+
+### 16. 현재 사용자 정보 확인 - ADMIN
+GET http://localhost:8080/api/users/me
+X-User-Id: 2
+X-User-Role: ADMIN
+
+### 17. 보호된 리소스 접근
+GET http://localhost:8080/api/users/protected
+X-User-Id: 1
+X-User-Role: USER
