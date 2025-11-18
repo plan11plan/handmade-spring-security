@@ -46,6 +46,8 @@ public class SecurityConfig {
         return RequestMatcherDelegatingAuthorizationManager.builder()
                 .requestMatchers(new AntPathRequestMatcher("/api/admin/**"))
                 .hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/api/users/*/public"))
+                .permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/users/**"))
                 .authenticated()
                 .anyRequest()
@@ -63,6 +65,7 @@ public class SecurityConfig {
         FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns("/api/*", "/api/**");
+        registrationBean.setEnabled(false);
         registrationBean.setOrder(1);
 
         return registrationBean;
@@ -79,6 +82,7 @@ public class SecurityConfig {
         FilterRegistrationBean<AuthorizationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns("/api/*", "/api/**");
+        registrationBean.setEnabled(false);
         registrationBean.setOrder(2);
 
         return registrationBean;
