@@ -316,7 +316,7 @@ static Advisor postAuthorizeMethodInterceptor() {
 ## 4-2 Method Security 아키텍처 구현하기
 ###  ✅ 구현 완료 조건
 - [x] 메서드 실행 전 권한을 검사한다.
-- [ ] 메서드 실행 후 권한을 검사한다.
+- [x] 메서드 실행 후 권한을 검사한다.
 - [x] @PreAuthorize에서 Authentication 메서드에 액세스할 수 있는지 확인한다.
 - [x] @PostAuthorize에서 Authentication 반환된 개체에 액세스할 수 있는지 확인한다.
 - [x] 메서드 보안에서 사용할 표현식 메서드 제공
@@ -386,7 +386,7 @@ static Advisor postAuthorizeMethodInterceptor() {
     - 권한 있으면 메서드 실행, 없으면 AuthorizationDeniedException
 
 ### 📌 AuthorizationManagerAfterMethodInterceptor
-- [ ] 메서드 실행 후 권한을 검사한다.
+- [x] 메서드 실행 후 권한을 검사한다.
     - @PostAuthorize가 있는 메서드를 가로챈다
     - 메서드 먼저 실행하여 반환값 획득
     - PostAuthorizeAuthorizationManager로 권한 검사
